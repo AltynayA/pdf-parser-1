@@ -84,6 +84,7 @@ rows = conn.execute(db.select(books)).fetchall()
 print(rows)
 
 from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import field_validator
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy import String
@@ -96,3 +97,15 @@ class UserBase(Base):
 
 	id: Mapped[int] = mapped_column(primary_key=True)
 	name: Mapped[str] = mapped_column(String(30))
+	
+@field_validator('name')
+def name_must_not_be_empty(cls, value):
+    if not value or not value.strip():
+        raise ValueError('Name must not be empty')
+    return value
+
+@field_validator('id')
+def id_must_be_positive(cls, value):
+    if value <= 0:
+        raise ValueError('ID must be positive')
+    return value

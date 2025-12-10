@@ -75,6 +75,28 @@ def extract_target_page(pdf_path: str, phrase: str, out_dir="pages", dpi=200):
 
     return None  # not found
 
+def extract_floats(lines):
+    floats = []
+
+    # Регулярка, которая ловит нормальные float-ы:
+    #  - 1.234
+    #  - .234
+    #  - 1234.0
+    #  - 1,234 (если вдруг OCR шалит)
+    pattern = re.compile(r"\d+\.\d+|\.\d+|\d+,\d+")
+
+    for line in lines:
+        matches = pattern.findall(line)
+
+        for m in matches:
+            m = m.replace(',', '.')   # нормализация
+            try:
+                floats.append(float(m))
+            except:
+                pass
+
+    return floats
+
 # -----------------------------
 # Full OCR on the detected page
 # -----------------------------
@@ -97,7 +119,11 @@ if __name__ == "__main__":
         print("Найдена страница:", target_png)
         data = full_ocr(target_png)
         cleaned = [item[1] for item in data]
-        print("OCR data (JSON):", json.dumps(cleaned, ensure_ascii=False, indent=2))
+        floats = extract_floats(cleaned)
+        json_output = json.dumps(floats, ensure_ascii=False, indent=2)
+        with open("output.json", "w", encoding="utf-8") as f:
+            json.dump(floats, f, ensure_ascii=False, indent=2)
+        print("OCR data (JSON):", json_output)
         print("OCR data:", cleaned)
     else:
         print("Страница не найдена.")
