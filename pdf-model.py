@@ -54,7 +54,7 @@ def rolling_hash(text: str, pattern: str) -> bool:
 # Main logic
 # -----------------------------
 
-def extract_target_page(pdf_path: str, phrase: str, out_dir="pages", dpi=200):
+def extract_target_page(pdf_path: str, phrase: str, out_dir="pages", dpi=220):#adjust dpi as needed
     os.makedirs(out_dir, exist_ok=True)
 
     phrase_norm = normalize(phrase)
@@ -121,7 +121,7 @@ def full_ocr(png_path: str):
 
 if __name__ == "__main__":
     pdf = "pdf-parser-1\data\\train\\sample3.pdf"
-    phrase = "year_built"
+    phrase = "city"
 
     target_png = extract_target_page(pdf, phrase)
 
@@ -130,8 +130,7 @@ if __name__ == "__main__":
         data = full_ocr(target_png)
         cleaned = [item[1] for item in data]
         floats = extract_floats(cleaned)
-        ints = extract_ints(cleaned)
-        json_output = json.dumps(ints, ensure_ascii=False, indent=2)
+        json_output = json.dumps(floats, ensure_ascii=False, indent=2)
         with open("output.json", "w", encoding="utf-8") as f:
             json.dump(floats, f, ensure_ascii=False, indent=2)
         print("OCR data (JSON):", json_output)

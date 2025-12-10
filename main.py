@@ -3,6 +3,7 @@ from fastapi import FastAPI, HTTPException
 from models import PropertyInput
 from db import conn, listings
 import sqlalchemy as db
+from pydantic import field_validator
 
 # importing Pydantic model
 from models import PropertyInput
@@ -17,10 +18,17 @@ async def root():
 # validating json input
 @app.post("/validate")
 async def validate_property(data: PropertyInput):
+    greater_than_zero('price',"area_sqm", "bedrooms", "year_built", data)
     return {
         "message": "JSON is valid",
         "validated_data": data.model_dump()
     }
+
+@field_validator('price', 'area_sqm',"bedrooms", "year_built", mode="before")
+def greater_than_zero(cls, v):
+    if v <= 0:
+        raise ValueError('Must be greater than zero')
+    return v
 
 # validating and saving to DB``
 @app.post("/validate-and-save")
@@ -35,6 +43,9 @@ async def validate_and_save(data: PropertyInput):
             year_built=data.year_built,
             is_furnished=data.is_furnished
         )
+
+        greater_than_zero('price',"area_sqm", "bedrooms", "year_built", data)
+
         result = conn.execute(insert_query)
         conn.commit()
 
@@ -46,7 +57,7 @@ async def validate_and_save(data: PropertyInput):
 
         return {
             "message": "JSON is valid and saved to DB ✅",
-             "inserted_record": dict(record._mapping)
+            "inserted_record": dict(record._mapping)
         }
 
     except Exception as e:

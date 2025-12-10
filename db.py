@@ -1,6 +1,6 @@
 import sqlalchemy as db
 
-engine = db.create_engine('sqlite:///books.db')
+engine = db.create_engine('sqlite:///listings.db')
 conn = engine.connect()
 metadata = db.MetaData()
 
