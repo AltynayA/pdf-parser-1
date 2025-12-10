@@ -96,6 +96,21 @@ def extract_floats(lines):
                 pass
 
     return floats
+def extract_ints(lines):
+    ints = []
+
+    pattern = re.compile(r"\b\d+\b")
+
+    for line in lines:
+        matches = pattern.findall(line)
+
+        for m in matches:
+            try:
+                ints.append(int(m))
+            except:
+                pass
+
+    return ints
 
 # -----------------------------
 # Full OCR on the detected page
@@ -110,8 +125,8 @@ def full_ocr(png_path: str):
 # -----------------------------
 
 if __name__ == "__main__":
-    pdf = "data/train/KEQ-FV-and-PV-tables.pdf"
-    phrase = "Present value and Future value tables"
+    pdf = "pdf-parser-1\data\\train\\sample3.pdf"
+    phrase = "year_built"
 
     target_png = extract_target_page(pdf, phrase)
 
@@ -120,7 +135,8 @@ if __name__ == "__main__":
         data = full_ocr(target_png)
         cleaned = [item[1] for item in data]
         floats = extract_floats(cleaned)
-        json_output = json.dumps(floats, ensure_ascii=False, indent=2)
+        ints = extract_ints(cleaned)
+        json_output = json.dumps(ints, ensure_ascii=False, indent=2)
         with open("output.json", "w", encoding="utf-8") as f:
             json.dump(floats, f, ensure_ascii=False, indent=2)
         print("OCR data (JSON):", json_output)
