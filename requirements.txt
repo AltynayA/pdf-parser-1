@@ -1,0 +1,5 @@
+fastapi==0.124.0
+uvicorn==0.38.0
+pydantic==2.7.0
+sqlalchemy==2.0.20
+pdf2image==1.16.3
