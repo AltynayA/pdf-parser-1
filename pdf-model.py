@@ -112,17 +112,12 @@ def extract_ints(lines):
 
     return ints
 
-# -----------------------------
-# Full OCR on the detected page
-# -----------------------------
-
+#full ocr of detected page
 def full_ocr(png_path: str):
     reader = easyocr.Reader(["ru", "en"])
     return reader.readtext(png_path, detail=1, paragraph=True)
 
-# -----------------------------
-# Example usage
-# -----------------------------
+
 
 if __name__ == "__main__":
     pdf = "pdf-parser-1\data\\train\\sample3.pdf"
