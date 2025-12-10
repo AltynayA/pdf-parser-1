@@ -46,7 +46,7 @@ async def validate_and_save(data: PropertyInput):
 
         return {
             "message": "JSON is valid and saved to DB ✅",
-            "inserted_record": dict(record)
+             "inserted_record": dict(record._mapping)
         }
 
     except Exception as e:
