@@ -14,7 +14,6 @@ listings = db.Table(
     db.Column('price', db.Integer),
     db.Column('area_sqm', db.Float),
     db.Column('bedrooms', db.Integer),
-    db.Column('bathrooms', db.Integer),
     db.Column('year_built', db.Integer),
     db.Column('is_furnished', db.Boolean, default=False) 
 )

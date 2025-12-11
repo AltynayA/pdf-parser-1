@@ -64,3 +64,16 @@ async def validate_and_save(data: PropertyInput):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+# get by id 
+@app.get("/get/{item_id}")
+async def get_listing(item_id: int):
+    record = conn.execute(
+        db.select(listings).where(listings.c.id == item_id)
+    ).fetchone()
+
+    if not record:
+        raise HTTPException(status_code=404, detail="Record not found")
+
+    return dict(record._mapping)
+

@@ -120,7 +120,7 @@ def full_ocr(png_path: str):
 
 
 if __name__ == "__main__":
-    pdf = "pdf-parser-1\data\\train\\sample3.pdf"
+    pdf = "pdf-parser-1/data/train/sample2.pdf"
     phrase = "city"
 
     target_png = extract_target_page(pdf, phrase)

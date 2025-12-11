@@ -1,14 +1,17 @@
-FROM python:3.11-slim
+FROM python:3.9-slim-bullseye
 
-# Install system dependencies for PDF conversion
+# Install system packages for OCR
 RUN apt-get update && \
-    apt-get install -y poppler-utils && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y \
+    poppler-utils \
+    tesseract-ocr \
+    libgl1 \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
+# Set work directory
 WORKDIR /app
 
-# Copy project files
+# Copy project
 COPY . /app
 
 # Install Python dependencies
@@ -18,5 +21,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Expose FastAPI port
 EXPOSE 8000
 
-# Run FastAPI app
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Default command = Run FastAPI
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
