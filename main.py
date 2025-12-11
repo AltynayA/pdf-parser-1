@@ -18,19 +18,11 @@ async def root():
 # validating json input
 @app.post("/validate")
 async def validate_property(data: PropertyInput):
-    if greater_than_zero('price',"area_sqm", "bedrooms", "year_built", data):
-        return {
-            "message": "JSON is valid",
-            "validated_data": data.model_dump()
-                }
-    else:
-        raise HTTPException(status_code=400, detail="Validation failed")
+    return {
+        "message": "JSON is valid",
+        "validated_data": data.model_dump()
+            }
 
-@field_validator('price', 'area_sqm',"bedrooms", "year_built", mode="before")
-def greater_than_zero(cls, v):
-    if v <= 0:
-        raise ValueError('Must be greater than zero')
-    return v
 
 # validating and saving to DB``
 @app.post("/validate-and-save")
@@ -46,7 +38,6 @@ async def validate_and_save(data: PropertyInput):
             is_furnished=data.is_furnished
         )
 
-        greater_than_zero('price',"area_sqm", "bedrooms", "year_built", data)
 
         result = conn.execute(insert_query)
         conn.commit()
