@@ -18,11 +18,13 @@ async def root():
 # validating json input
 @app.post("/validate")
 async def validate_property(data: PropertyInput):
-    greater_than_zero('price',"area_sqm", "bedrooms", "year_built", data)
-    return {
-        "message": "JSON is valid",
-        "validated_data": data.model_dump()
-    }
+    if greater_than_zero('price',"area_sqm", "bedrooms", "year_built", data):
+        return {
+            "message": "JSON is valid",
+            "validated_data": data.model_dump()
+                }
+    else:
+        raise HTTPException(status_code=400, detail="Validation failed")
 
 @field_validator('price', 'area_sqm',"bedrooms", "year_built", mode="before")
 def greater_than_zero(cls, v):

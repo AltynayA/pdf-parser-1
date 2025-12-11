@@ -1,4 +1,5 @@
 import sqlalchemy as db
+from sqlalchemy import select
 
 engine = db.create_engine('sqlite:///listings.db')
 conn = engine.connect()
@@ -19,3 +20,15 @@ listings = db.Table(
 )
 
 metadata.create_all(engine)
+
+query = select(listings)
+
+# Выполняем его
+result = conn.execute(query)
+
+# Забираем все строки
+rows = result.fetchall()
+
+# Выводим
+for row in rows:
+    print(row)
