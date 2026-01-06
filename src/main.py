@@ -1,12 +1,12 @@
 
 from fastapi import FastAPI, HTTPException
-from models import PropertyInput
-from db import conn, listings
+from src.models.models import PropertyInput
+from src.db.db import conn, listings
 import sqlalchemy as db
 from pydantic import field_validator
 
 # importing Pydantic model
-from models import PropertyInput
+from src.models.models import PropertyInput
 app = FastAPI()
 # endpoint accepting input 
 

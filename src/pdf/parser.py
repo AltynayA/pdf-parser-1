@@ -4,20 +4,16 @@ import json
 from pdf2image import convert_from_path
 import easyocr
 
-# -----------------------------
-# Normalization
-# -----------------------------
 
+# normalization
 def normalize(s: str) -> str:
     s = s.lower()
     s = re.sub(r"[^a-zа-я0-9 ]", "", s)
     s = re.sub(r"\s+", " ", s)
     return s.strip()
 
-# -----------------------------
-# Rolling Hash (Rabin-Karp)
-# -----------------------------
 
+# rolling Hash (Rabin-Karp)
 def rolling_hash(text: str, pattern: str) -> bool:
     base = 257
     mod = 10**9 + 7
@@ -50,9 +46,7 @@ def rolling_hash(text: str, pattern: str) -> bool:
 
     return False
 
-# -----------------------------
-# Main logic
-# -----------------------------
+# main extraction logic
 
 def extract_target_page(pdf_path: str, phrase: str, out_dir="pages", dpi=220):#adjust dpi as needed
     os.makedirs(out_dir, exist_ok=True)
@@ -78,18 +72,18 @@ def extract_target_page(pdf_path: str, phrase: str, out_dir="pages", dpi=220):#a
 def extract_floats(lines):
     floats = []
 
-    # Регулярка, которая ловит нормальные float-ы:
+    # regex to catch floats
     #  - 1.234
     #  - .234
     #  - 1234.0
-    #  - 1,234 (если вдруг OCR шалит)
+    #  - 1,234 (for ocr confusion between . and ,)
     pattern = re.compile(r"\d+\.\d+|\.\d+|\d+,\d+")
 
     for line in lines:
         matches = pattern.findall(line)
 
         for m in matches:
-            m = m.replace(',', '.')   # нормализация
+            m = m.replace(',', '.')   # normalziing commo -> dot
             try:
                 floats.append(float(m))
             except:
@@ -112,7 +106,7 @@ def extract_ints(lines):
 
     return ints
 
-#full ocr of detected page
+#full ocr of the detected page
 def full_ocr(png_path: str):
     reader = easyocr.Reader(["ru", "en"])
     return reader.readtext(png_path, detail=1, paragraph=True)
@@ -120,8 +114,9 @@ def full_ocr(png_path: str):
 
 
 if __name__ == "__main__":
-    pdf = "data/train/sample2.pdf"
-    phrase = "city"
+    pdf = "data/train/sample4.pdf"
+    # search by table heading
+    phrase = "DONOR REQUESTS FOR DATA"
 
     target_png = extract_target_page(pdf, phrase)
 

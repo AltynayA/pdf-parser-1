@@ -1,26 +1,30 @@
 FROM python:3.9-slim-bullseye
 
-# Install system packages for OCR
+# set working directory
+WORKDIR /app
+
+# install system packages for PDF -> img -> OCR pipeline
 RUN apt-get update && \
-    apt-get install -y \
+    apt-get install -y --no-install-recommends  \
     poppler-utils \
     tesseract-ocr \
     libgl1 \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Set work directory
-WORKDIR /app
+COPY requirements.txt . 
 
-# Copy project
-COPY . /app
-
-# Install Python dependencies
-RUN pip install "pillow<10"
+# upgrade pip -> install dependencies
 RUN pip install --no-cache-dir --upgrade pip
+RUN pip install "pillow<10"
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose FastAPI port
+# copy project
+COPY . /app
+
+# expose FastAPI port
 EXPOSE 8000
 
-# Default command = Run FastAPI
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# default command = Run FastAPI
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
